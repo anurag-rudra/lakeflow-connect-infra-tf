@@ -29,10 +29,10 @@ variable "python_script_path" {
   default     = "../tools/validate_running_gateway.py"
 }
 
-variable "yaml_config_path" {
-  description = "Path to the YAML configuration file"
-  type        = string
-}
+# variable "yaml_config_path" {
+#   description = "Path to the YAML configuration file"
+#   type        = string
+# }
 
 variable "ingestion_pipeline_ids" {
   description = "List of ingestion pipeline IDs to validate after gateway is running"
