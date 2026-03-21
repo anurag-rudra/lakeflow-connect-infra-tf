@@ -59,4 +59,8 @@ resource "null_resource" "gateway_validation" {
 output "validation_completed" {
   description = "Indicates that gateway validation has completed successfully"
   value       = null_resource.gateway_validation.id
-} 
+}
+
+output "yaml_config_path" {
+  value = var.yaml_config_path
+}
