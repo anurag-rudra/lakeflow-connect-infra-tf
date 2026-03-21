@@ -1,0 +1,90 @@
+# Application name and Databricks environment name
+env: "dev"
+app_name: "claims"
+
+# Provider the name of the Unity catalog connection
+connection:
+  name: "dbs_claims_db_conn"
+  source_type: "SQLSERVER"
+
+# Unity Catalog configuration
+# global_uc_catalog: Default UC catalog where ingestion pipeline tables will land
+# staging_uc_catalog: UC catalog for gateway pipeline staging assets (defaults to global_uc_catalog if not provided)
+# staging_schema: Schema name for gateway pipeline staging assets (defaults to {app_name}_lf_staging if not provided)
+unity_catalog:
+  global_uc_catalog: "smart_claims_dev"
+  #staging_uc_catalog:   # Optional: if not provided, defaults to global_uc_catalog
+  staging_schema: "01_bronze"  # Optional: if not provided, defaults to {app_name}_lf_staging
+
+# The cluster policy used with the deployment of the gateway pipeline
+gateway_pipeline_cluster_policy_name: claim_project_cluster
+
+# List of databases within the SQL Server to ingest from
+# The 'use_schema_ingestion' flag determines whether all tables in the schema are ingested automatically (true) 
+# or only the explicitly listed tables are ingested (false). Setting it to 'true' will ignore the 'tables' list.
+databases:
+  - name: anuragdbsclaimsproject-sqldb
+    # Optional: Override global_uc_catalog for this specific database
+    uc_catalog: "smart_claims_dev"  # If not provided, uses global_uc_catalog
+    
+    # Optional: Add prefix/suffix to schema names for this database. In UC, it will be visible as {schema_prefix}{<the schema name>}{schema_suffix}
+    # schema_prefix: "retail_ops_db_one_"
+    # schema_suffix: "_v2"
+    
+    schemas:
+      - name: dbs_claims
+        use_schema_ingestion: false
+        tables:
+          - source_table: Customer
+          - source_table: claim
+          - source_table: policy
+
+
+# Create one gateway pipeline for the entire application
+gateway_pipeline_cluster_config:
+  label: "default"
+  node_type_id: "Standard_E4d_v4"
+  autoscale:
+    min_workers: 1
+    max_workers: 2
+    mode: ENHANCED
+  apply_policy_default_values: false
+  enable_local_disk_encryption: false
+  custom_tags: {}
+  spark_conf: {}
+  spark_env_vars: {}
+  ssh_public_keys: []
+
+# Gateway validation configuration : This configuration is used by a script to validate that the gateway pipeline is running before the job resource is created/updated.
+gateway_validation:
+  timeout_minutes: 15
+  check_interval_seconds: 15
+
+# Event log configuration : Control whether pipeline event logs are materialized to Delta tables
+# When enabled, event logs are written to Delta tables in the respective schemas:
+#   - Gateway pipeline: logs to the staging schema (<app>_lf_staging)
+#   - Ingestion pipelines: logs to their respective landing schemas (<app>_lf_<database>)
+event_log:
+  to_table: true  # Set to false to disable event log table creation
+
+# Create orchestration using Lakeflow Jobs to run ingestion pipelines
+job:
+  common_job_for_all_pipelines: false
+  common_schedule:
+    quartz_cron_expression: "0 */30 * * * ?"  # This schedule applies if 'common_job_for_all_pipelines' is 'true'
+    timezone_id: "UTC"
+  
+  # Per-database schedules apply when common_job_for_all_pipelines is false
+  # Each schedule group can apply to one or more databases
+  # Multiple databases can share the same schedule by listing them in 'applies_to'
+  per_database_schedules:
+    - name: "frequent_sync"
+      applies_to: []
+      schedule:
+        quartz_cron_expression: "0 */15 * * * ?"  # Run every 15 minutes
+        timezone_id: "UTC"
+    - name: "hourly_sync"
+      applies_to: []
+      schedule:
+        quartz_cron_expression: "0 0 * * * ?"  # Run every hour
+        timezone_id: "UTC"
