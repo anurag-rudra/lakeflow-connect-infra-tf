@@ -32,7 +32,7 @@ variable "python_script_path" {
 variable "yaml_config_path" {
   description = "Path to the YAML configuration file"
   type        = string
-  default     = "${path.module}/config/lakeflow_dev.yml"
+  # default     = "${path.module}/config/lakeflow_dev.yml"
 }
 
 variable "ingestion_pipeline_ids" {
