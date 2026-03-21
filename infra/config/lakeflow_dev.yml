@@ -25,7 +25,7 @@ gateway_pipeline_cluster_policy_name: Personal Compute
 databases:
   - name: anuragdbsclaimsproject-sqldb
     # Optional: Override global_uc_catalog for this specific database
-    uc_catalog: "smart_claims_dev"  # If not provided, uses global_uc_catalog
+    # uc_catalog: "smart_claims_dev"  # If not provided, uses global_uc_catalog
     
     # Optional: Add prefix/suffix to schema names for this database. In UC, it will be visible as {schema_prefix}{<the schema name>}{schema_suffix}
     # schema_prefix: "retail_ops_db_one_"
