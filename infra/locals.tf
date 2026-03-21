@@ -1,5 +1,6 @@
 locals {
   cfg = yamldecode(file(var.yaml_config_path))
+  
 
   # Read variables from YAML instead of Terraform variables
   env      = local.cfg.env
