@@ -70,21 +70,3 @@ event_log:
 # Create orchestration using Lakeflow Jobs to run ingestion pipelines
 job:
   common_job_for_all_pipelines: false
-  common_schedule:
-    quartz_cron_expression: "0 */30 * * * ?"  # This schedule applies if 'common_job_for_all_pipelines' is 'true'
-    timezone_id: "UTC"
-  
-  # Per-database schedules apply when common_job_for_all_pipelines is false
-  # Each schedule group can apply to one or more databases
-  # Multiple databases can share the same schedule by listing them in 'applies_to'
-  per_database_schedules:
-    - name: "frequent_sync"
-      applies_to: []
-      schedule:
-        quartz_cron_expression: "0 */15 * * * ?"  # Run every 15 minutes
-        timezone_id: "UTC"
-    - name: "hourly_sync"
-      applies_to: []
-      schedule:
-        quartz_cron_expression: "0 0 * * * ?"  # Run every hour
-        timezone_id: "UTC"
