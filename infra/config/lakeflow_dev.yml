@@ -13,7 +13,7 @@ connection:
 # staging_schema: Schema name for gateway pipeline staging assets (defaults to {app_name}_lf_staging if not provided)
 unity_catalog:
   global_uc_catalog: "smart_claims_dev"
-  #staging_uc_catalog:   # Optional: if not provided, defaults to global_uc_catalog
+  staging_uc_catalog:  "smart_claims_dev" # Optional: if not provided, defaults to global_uc_catalog
   staging_schema: "01_bronze"  # Optional: if not provided, defaults to {app_name}_lf_staging
 
 # The cluster policy used with the deployment of the gateway pipeline
