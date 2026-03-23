@@ -17,7 +17,7 @@ unity_catalog:
   staging_schema: "01_bronze"  # Optional: if not provided, defaults to {app_name}_lf_staging
 
 # The cluster policy used with the deployment of the gateway pipeline
-gateway_pipeline_cluster_policy_name: Job Compute
+gateway_pipeline_cluster_policy_name: LakeFlow_Connect_Policy
 
 # List of databases within the SQL Server to ingest from
 # The 'use_schema_ingestion' flag determines whether all tables in the schema are ingested automatically (true) 
